@@ -4,7 +4,16 @@
 (function ($) {
     "use strict";
 
-    var Stack = function () {
+    var Stack,
+        DATA_NAMES = {
+            pinned: 'pinit-pinned',
+            stack: 'pinit-stack',
+            uid: 'pinit-uid',
+            placeholder: 'pinit-placeholder',
+            originalCss: 'pinit-original-css'
+        };
+
+    Stack = function () {
         var stack = {},
             getStackHeight;
 
@@ -39,7 +48,7 @@
         };
 
         this.push = function (obj) {
-            var uid = obj.$el.data('pinit-uid'),
+            var uid = obj.$el.data(DATA_NAMES.uid),
                 top = getStackHeight();
             stack[uid] = {
                 $el: obj.$el,
@@ -64,8 +73,8 @@
     };
 
     $.fn.pinit = function (options) {
-        var SCROLL_DIRECTION_UP = -1, // Constant
-            SCROLL_DIRECTION_DOWN = 1, // Constant
+        var SCROLL_DIRECTION_UP = -1,
+            SCROLL_DIRECTION_DOWN = 1,
             _methods = {},
             _defaults = {
                 pinnedClass: 'pinned',
@@ -75,11 +84,11 @@
             stack,
             lastScroll; // Last scrollTop value
 
-        if ($(window).data('pinit-stack')) {
-            stack = $(window).data('pinit-stack');
+        if ($(window).data(DATA_NAMES.stack)) {
+            stack = $(window).data(DATA_NAMES.stack);
         } else {
             stack = new Stack();
-            $(window).data("pinit-stack", stack);
+            $(window).data(DATA_NAMES.stack, stack);
         }
 
         options = options || {};
@@ -109,7 +118,7 @@
             var i, l, breakpoint;
             for (i = 0, l = breakpoints.length; i < l; i += 1) {
                 breakpoint = breakpoints[i];
-                if (!breakpoint.$el.data('pinned')) {
+                if (!breakpoint.$el.data(DATA_NAMES.pinned)) {
                     breakpoint.height = breakpoint.$el.height();
                 }
             }
@@ -153,9 +162,9 @@
 
             $el
                 .after(placeholder)
-                .data('pinit-uid', uid)
-                .data('pinit-placeholder', placeholder)
-                .data('pinit-original-css', originalCss);
+                .data(DATA_NAMES.uid, uid)
+                .data(DATA_NAMES.placeholder, placeholder)
+                .data(DATA_NAMES.originalCss, originalCss);
         };
 
         /**
@@ -164,7 +173,7 @@
          */
         _methods.pin = function (obj) {
             var top,
-                originalCss = obj.$el.data('pinit-original-css');
+                originalCss = obj.$el.data(DATA_NAMES.originalCss);
             if (originalCss.position === 'fixed') {
                 return;
             }
@@ -175,7 +184,7 @@
                     top: top
                 })
                 .addClass(options.pinnedClass)
-                .data('pinit-pinned', true);
+                .data(DATA_NAMES.pinned, true);
 
             if (options.setOriginalDimensions) {
                 obj.$el
@@ -183,7 +192,7 @@
                     .height(originalCss.height);
             }
 
-            obj.$el.data('pinit-placeholder').show();
+            obj.$el.data(DATA_NAMES.placeholder).show();
             _methods.refreshBreakpoints();
         };
 
@@ -192,14 +201,14 @@
          * @param obj
          */
         _methods.unpin = function (obj) {
-            var originalCss = obj.$el.data('pinit-original-css');
+            var originalCss = obj.$el.data(DATA_NAMES.originalCss);
 
             obj.$el
                 .css(originalCss)
                 .removeClass(options.pinnedClass)
-                .data('pinit-pinned', false);
-            obj.$el.data('pinit-placeholder').hide();
-            stack.remove(obj.$el.data('pinit-uid'));
+                .data(DATA_NAMES.pinned, false);
+            obj.$el.data(DATA_NAMES.placeholder).hide();
+            stack.remove(obj.$el.data(DATA_NAMES.uid));
         };
 
         /**
@@ -216,7 +225,7 @@
 
             for (i = 0, l = breakpoints.length; i < l; i += 1) {
                 breakpoint = breakpoints[i];
-                pinned = breakpoint.$el.data('pinit-pinned');
+                pinned = breakpoint.$el.data(DATA_NAMES.pinned);
 
                 if (scrollDirection === SCROLL_DIRECTION_UP) {
                     // on scroll up
