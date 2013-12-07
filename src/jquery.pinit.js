@@ -64,12 +64,16 @@
     };
 
     $.fn.pinit = function (options) {
-        var _methods = {},
+        var SCROLL_DIRECTION_UP = -1, // Constant
+            SCROLL_DIRECTION_DOWN = 1, // Constant
+            _methods = {},
             _defaults = {
-                pinnedClass: 'pinned'
+                pinnedClass: 'pinned',
+                setOriginalDimensions: false
             },
             breakpoints = [],
-            stack;
+            stack,
+            lastScroll; // Last scrollTop value
 
         if ($(window).data('pinit-stack')) {
             stack = $(window).data('pinit-stack');
@@ -172,6 +176,13 @@
                 })
                 .addClass(options.pinnedClass)
                 .data('pinit-pinned', true);
+
+            if (options.setOriginalDimensions) {
+                obj.$el
+                    .width(originalCss.width)
+                    .height(originalCss.height);
+            }
+
             obj.$el.data('pinit-placeholder').show();
             _methods.refreshBreakpoints();
         };
@@ -189,34 +200,41 @@
                 .data('pinit-pinned', false);
             obj.$el.data('pinit-placeholder').hide();
             stack.remove(obj.$el.data('pinit-uid'));
-        }
+        };
 
         /**
          * Window onscroll event callback
          */
         _methods.scroll = function () {
-            var top = $(window).scrollTop() + stack.height,
+            var top = $(window).scrollTop(),
+                topModification = 0,
                 i,
                 l,
                 breakpoint,
-                pinned;
+                pinned,
+                scrollDirection = lastScroll < top ? SCROLL_DIRECTION_DOWN : SCROLL_DIRECTION_UP;
 
             for (i = 0, l = breakpoints.length; i < l; i += 1) {
                 breakpoint = breakpoints[i];
                 pinned = breakpoint.$el.data('pinit-pinned');
-                console.log(breakpoint.top, top);
-                if (breakpoint.top < top - breakpoint.height) {
+
+                if (scrollDirection === SCROLL_DIRECTION_UP) {
+                    // on scroll up
+                    topModification = breakpoint.height * -1;
+                }
+
+                if (breakpoint.top < top + stack.height + topModification) {
                     if (!pinned) {
-                        console.log("pin", breakpoint.top, breakpoint.height, top);
                         _methods.pin(breakpoint);
                     }
                 } else {
                     if (pinned) {
-                        console.log("unpin", breakpoint.top, breakpoint.height, top);
                         _methods.unpin(breakpoint);
                     }
                 }
             }
+
+            lastScroll = top;
         };
 
         /**

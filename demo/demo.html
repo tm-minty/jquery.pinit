@@ -8,7 +8,9 @@
         (function ($) {
             "use strict";
             $(function () {
-                $('.js-pin').pinit();
+                $('.js-pin').pinit({
+                    setOriginalDimensions: true
+                });
             });
         }(jQuery));
     </script>
@@ -23,7 +25,7 @@
         .header{
             height: 40px;
 
-            background: rgba(0,0,0,.15);/*#333;*/
+            background: rgba(0,0,0,.35);/*#333;*/
             color: #eeeeee;
 
             line-height: 40px;
