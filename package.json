@@ -12,7 +12,7 @@
         "demo/demo.html"
     ],
     "dependencies": {
-        "jquery": ">1.10.2"
+        "jquery": ">=1.10.2"
     },
     "bugs": {
         "mail": "coffee@utrechkom.ru",
