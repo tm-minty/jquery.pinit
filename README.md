@@ -1,5 +1,5 @@
 # jQuery.pinit #
-----------
+
 A jQuery plugin that pins DOM elements to the viewport top and according their order places them under each other.
 
 ## Requirements
