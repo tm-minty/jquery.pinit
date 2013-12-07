@@ -1,7 +1,11 @@
 {
-    "name": "jQuery.pinIt",
+    "name": "jquery.pinit",
+    "title": "jQuery.pinIt",
     "version": "0.1.0",
-    "author": "Timur Mingaliev <timur@mingaliev.com>",
+    "author": {
+        "name": "Timur Mingaliev",
+        "email": "timur@mingaliev.com"
+    },
     "description": "jQuery plugin that pins elements on top on page scroll and changes it's position to fixed",
     "repository": {
         "type": "git",
@@ -16,7 +20,7 @@
     },
     "bugs": {
         "mail": "coffee@utrechkom.ru",
-        "web": "https://github.com/tm-minty/jquery.pinit/issues"
+        "url": "https://github.com/tm-minty/jquery.pinit/issues"
     },
     "licenses": [
         {
