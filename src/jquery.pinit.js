@@ -149,16 +149,22 @@
             var $el = $(this),
                 uid = _methods.generateUid(),
                 placeholder,
-                originalCss;
-            breakpoints.push({
-                el: this,
-                $el: $el,
-                top: $el.offset().top,
-                height: $el.height()
-            });
+                originalCss,
+                breakpoint = {
+                    el: this,
+                    $el: $el,
+                    top: $el.offset().top,
+                    height: $el.height()
+                };
+            breakpoints.push(breakpoint);
 
             placeholder = _methods.createPlaceholder($el, uid);
             originalCss = $el.css(['position', 'top', 'left', 'width', 'height']);
+
+            // If element already has fixed position add it to stack
+            if (originalCss.position === 'fixed') {
+                stack.push(breakpoint);
+            }
 
             $el
                 .after(placeholder)

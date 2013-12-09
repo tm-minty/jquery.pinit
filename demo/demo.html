@@ -33,16 +33,24 @@
             text-align: center;
         }
 
+        .header_fixed{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
         .content{
             width: 900px;
-            margin: 0 auto;
+            margin: 50px auto 0;
             position: relative;
         }
     </style>
 </head>
 <body>
 
-    <header class="header js-pin">Header</header>
+    <header class="header header_fixed js-pin">Header</header>
     <section class="content">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus luctus consectetur sagittis. Nam id magna
             eget leo hendrerit scelerisque eu at augue. Duis feugiat in eros at tempor. Nulla in ullamcorper massa.

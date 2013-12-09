@@ -1,6 +1,6 @@
 {
     "name": "jQuery.pinIt",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": "Timur Mingaliev <timur@mingaliev.com>",
     "description": "jQuery plugin that pins elements on top on page scroll and changes it's position to fixed",
     "repository": {

@@ -2,6 +2,12 @@
 
 A jQuery plugin that pins DOM elements to the viewport top and according their order places them under each other.
 
+Original: **7554** bytes.
+
+Minified: **2414** bytes.
+
+Gzipped:  **571** bytes.
+
 ## Requirements
 
 -  jQuery >= 1.10.2 (plugin developed and tested on that version)
