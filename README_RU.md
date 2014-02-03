@@ -2,11 +2,11 @@
 
 jQuery.pinit - плагин, который прикрепляет DOM-элементы к верху viewport'а, и, с учетом их очередности, расставляет их друг под другом.
 
-Original: **7554** bytes.
+Original: **8505** bytes.
 
-Minified: **2414** bytes.
+Minified: **2670** bytes.
 
-Gzipped:  **571** bytes.
+Gzipped:  **632** bytes.
 
 ## Зависимости
 
