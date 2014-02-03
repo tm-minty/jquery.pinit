@@ -37,10 +37,14 @@
             for (uid in stack) {
                 if (stack.hasOwnProperty(uid)) {
                     item = stack[uid];
-                    item.$el.css({
-                        top: top
-                    });
-                    top += item.height;
+                    if (item.$el.is(":visible") && jQuery.contains(document, item.$el[0])) {
+                        item.$el.css({
+                            top: top
+                        });
+                        top += item.height;
+                    } else {
+                        delete stack[uid];
+                    }
                 }
             }
 
@@ -69,6 +73,22 @@
             this.refresh();
         };
 
+        this.get = function ($el) {
+            var uid;
+            $el = $($el);
+            for (uid in stack) {
+                if (stack.hasOwnProperty(uid)) {
+                    if ($el.is(stack[uid].$el)) {
+                        return stack[uid];
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        this.stack = stack;
+
         return this;
     };
 
@@ -93,8 +113,6 @@
 
         options = options || {};
         options = $.extend(_defaults, options);
-
-        stack = new Stack();
 
         /**
          * Generate UID
@@ -155,22 +173,27 @@
                     $el: $el,
                     top: $el.offset().top,
                     height: $el.height()
-                };
-            breakpoints.push(breakpoint);
+                },
+                existing = stack.get($el);
 
-            placeholder = _methods.createPlaceholder($el, uid);
-            originalCss = $el.css(['position', 'top', 'left', 'width', 'height']);
+            breakpoints.push(existing || breakpoint);
+            stack.refresh();
 
-            // If element already has fixed position add it to stack
-            if (originalCss.position === 'fixed') {
-                stack.push(breakpoint);
+            if (!existing) {
+                placeholder = _methods.createPlaceholder($el, uid);
+                originalCss = $el.css(['position', 'top', 'left', 'width', 'height']);
+
+                // If element already has fixed position add it to stack
+                if (originalCss.position === 'fixed') {
+                    stack.push(breakpoint);
+                }
+
+                $el
+                    .after(placeholder)
+                    .data(DATA_NAMES.uid, uid)
+                    .data(DATA_NAMES.placeholder, placeholder)
+                    .data(DATA_NAMES.originalCss, originalCss);
             }
-
-            $el
-                .after(placeholder)
-                .data(DATA_NAMES.uid, uid)
-                .data(DATA_NAMES.placeholder, placeholder)
-                .data(DATA_NAMES.originalCss, originalCss);
         };
 
         /**
@@ -231,21 +254,27 @@
 
             for (i = 0, l = breakpoints.length; i < l; i += 1) {
                 breakpoint = breakpoints[i];
-                pinned = breakpoint.$el.data(DATA_NAMES.pinned);
 
-                if (scrollDirection === SCROLL_DIRECTION_UP) {
-                    // on scroll up
-                    topModification = breakpoint.height * -1;
-                }
+                if (breakpoint.$el[0].parentNode) {
+                    pinned = breakpoint.$el.data(DATA_NAMES.pinned);
 
-                if (breakpoint.top < top + stack.height + topModification) {
-                    if (!pinned) {
-                        _methods.pin(breakpoint);
+                    if (scrollDirection === SCROLL_DIRECTION_UP) {
+                        // on scroll up
+                        topModification = breakpoint.height * -1;
+                    }
+
+                    if (breakpoint.top < top + stack.height + topModification) {
+                        if (!pinned) {
+                            _methods.pin(breakpoint);
+                        }
+                    } else {
+                        if (pinned) {
+                            _methods.unpin(breakpoint);
+                        }
                     }
                 } else {
-                    if (pinned) {
-                        _methods.unpin(breakpoint);
-                    }
+                    breakpoints.splice(i, 1);
+                    i -= 1;
                 }
             }
 
